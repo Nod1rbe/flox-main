@@ -34,60 +34,69 @@ class PaymentConfigWidget extends StatelessWidget {
             padding: config.padding,
             child: Column(
               children: [
-                Material(
-                  color: config.textFieldConfig.backgroundColor,
-                  borderRadius: BorderRadius.circular(config.textFieldConfig.cornerRadius),
-                  child: IgnorePointer(
-                    child: TextFormField(
-                      initialValue: 'Card holder name',
-                      readOnly: true,
-                      textAlign: _mapAlignmentToTextAlign(config.textFieldConfig.alignment),
-                      style: TextStyle(
-                        color: config.textFieldConfig.textColor,
-                        fontSize: config.textFieldConfig.fontSize,
-                        fontWeight: config.textFieldConfig.fontWeight,
-                      ).withGoogleFont(config.textFieldConfig.fontFamily),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Material(
+                        color: config.textFieldConfig.backgroundColor,
+                        borderRadius: BorderRadius.circular(config.textFieldConfig.cornerRadius),
+                        child: IgnorePointer(
+                          child: TextFormField(
+                            initialValue: '4242 4242 4242 4242',
+                            readOnly: true,
+                            textAlign: _mapAlignmentToTextAlign(config.textFieldConfig.alignment),
+                            style: TextStyle(
+                              color: config.textFieldConfig.textColor,
+                              fontSize: config.textFieldConfig.fontSize,
+                              fontWeight: config.textFieldConfig.fontWeight,
+                            ).withGoogleFont(config.textFieldConfig.fontFamily),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                            ),
+                          ),
                         ),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                Material(
-                  color: config.textFieldConfig.backgroundColor,
-                  borderRadius: BorderRadius.circular(config.textFieldConfig.cornerRadius),
-                  child: IgnorePointer(
-                    child: TextFormField(
-                      initialValue: '4242 4242 4242 4242',
-                      readOnly: true,
-                      textAlign: _mapAlignmentToTextAlign(config.textFieldConfig.alignment),
-                      style: TextStyle(
-                        color: config.textFieldConfig.textColor,
-                        fontSize: config.textFieldConfig.fontSize,
-                        fontWeight: config.textFieldConfig.fontWeight,
-                      ).withGoogleFont(config.textFieldConfig.fontFamily),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Material(
+                        color: config.textFieldConfig.backgroundColor,
+                        borderRadius: BorderRadius.circular(config.textFieldConfig.cornerRadius),
+                        child: IgnorePointer(
+                          child: TextFormField(
+                            initialValue: '12/26',
+                            readOnly: true,
+                            textAlign: _mapAlignmentToTextAlign(config.textFieldConfig.alignment),
+                            style: TextStyle(
+                              color: config.textFieldConfig.textColor,
+                              fontSize: config.textFieldConfig.fontSize,
+                              fontWeight: config.textFieldConfig.fontWeight,
+                            ).withGoogleFont(config.textFieldConfig.fontFamily),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                            ),
+                          ),
                         ),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
                       ),
                     ),
-                  ),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 GestureDetector(
