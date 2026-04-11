@@ -100,6 +100,7 @@ class _ManageFunnelDialogState extends State<ManageFunnelDialog> {
                                     );
                                   },
                                 ).then((value) {
+                                  if (!context.mounted) return;
                                   if (value is bool && value) {
                                     context.router.maybePop();
                                   }

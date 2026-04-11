@@ -14,12 +14,17 @@ class VisitsBarChart extends StatefulWidget {
   final List<Map<String, double>> barData;
   final double maxY;
   final PageViewsFilterType selectedRange;
+
+  /// `false` bo‘lsa, tashqi (umumiy) davr filtri ishlatiladi.
+  final bool showPeriodChips;
+
   const VisitsBarChart({
     super.key,
     this.isLoading = false,
     required this.barData,
     required this.maxY,
     required this.selectedRange,
+    this.showPeriodChips = true,
   });
 
   @override
@@ -49,18 +54,33 @@ class VisitsBarChartState extends State<VisitsBarChart> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Performance',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.white,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Sahifalar bo‘yicha kirishlar',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Funnel tartibidagi sahifalar',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.subtitle,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (widget.showPeriodChips)
+                    FilterPeriodChips(
+                      selectedRange: widget.selectedRange,
+                      onSelected: context.read<PageViewsCubit>().updateBarFilterPeriod,
                     ),
-                  ),
-                  FilterPeriodChips(
-                    selectedRange: widget.selectedRange,
-                    onSelected: context.read<PageViewsCubit>().updateBarFilterPeriod,
-                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -87,15 +107,21 @@ class VisitsBarChartState extends State<VisitsBarChart> {
     );
   }
 
+  Color _barColorAt(int index, int total) {
+    if (total <= 1) return AppColors.primary;
+    final t = index / (total - 1);
+    return Color.lerp(AppColors.primary, const Color(0xFF2979FF), t)!;
+  }
+
   BarChartGroupData makeGroupData(
     int x,
     double y, {
     bool isTouched = false,
     Color? barColor,
-    double width = 20,
+    double width = 22,
     List<int> showTooltips = const [],
   }) {
-    barColor ??= AppColors.white;
+    barColor ??= _barColorAt(x, widget.barData.length);
     return BarChartGroupData(
       x: x,
       barRods: [
@@ -124,7 +150,12 @@ class VisitsBarChartState extends State<VisitsBarChart> {
       minY: -0.1,
       barGroups: List.generate(widget.barData.length, (i) {
         final value = widget.barData[i].values.first;
-        return makeGroupData(i, value, isTouched: i == touchedIndex);
+        return makeGroupData(
+          i,
+          value,
+          isTouched: i == touchedIndex,
+          barColor: _barColorAt(i, widget.barData.length),
+        );
       }),
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(
@@ -182,8 +213,8 @@ class VisitsBarChartState extends State<VisitsBarChart> {
   Widget getBottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Colors.white,
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      fontSize: 11,
     );
     final index = value.toInt();
     if (index < 0 || index >= widget.barData.length) {

@@ -8,7 +8,6 @@ import 'package:flox/feature/builder/blocs/builder_bloc/builder_cubit.dart';
 import 'package:flox/feature/builder/blocs/builder_manager_bloc/builder_manager_cubit.dart';
 import 'package:flox/feature/builder/ui/sections/confirm_exit_dialog_section.dart';
 import 'package:flox/feature/main_dashboard/my_funnels/ui/widgets/links_view_dialog.dart';
-import 'package:flox/ui_components/components/tappable_component.dart';
 import 'package:flox/ui_components/elements/builder_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,14 +45,27 @@ class HeaderLayout extends StatelessWidget {
       builder: (context, state) {
         final builderCubit = context.read<BuilderCubit>();
         return Container(
-          padding: const EdgeInsets.only(left: 16, right: 24, top: 16, bottom: 16),
-          decoration: BoxDecoration(color: AppColors.layoutBackground.withValues(alpha: 0.75)),
+          padding: const EdgeInsets.only(left: 12, right: 24, top: 14, bottom: 14),
+          decoration: BoxDecoration(
+            color: AppColors.layoutBackground,
+            border: Border(
+              bottom: BorderSide(color: AppColors.dividerColor.withValues(alpha: 0.85)),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
           child: Row(
             children: [
-              SizedBox(
-                height: 32,
-                width: 32,
-                child: TappableComponent(
+              Material(
+                color: AppColors.transparent,
+                borderRadius: BorderRadius.circular(10),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(10),
                   onTap: () {
                     if (builderCubit.state.didPagesChange) {
                       showDialog(
@@ -72,21 +84,40 @@ class HeaderLayout extends StatelessWidget {
                       popFunction(context);
                     }
                   },
-                  borderRadius: 10,
                   child: Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Assets.icons.backIcon.svg(),
+                    padding: const EdgeInsets.all(8),
+                    child: SizedBox(
+                      height: 22,
+                      width: 22,
+                      child: Assets.icons.backIcon.svg(),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Text(
-                funnelName,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.white,
-                ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    funnelName,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.white,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  Text(
+                    'Funnel builder',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.subtitle,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                ],
               ),
               const Spacer(),
               BuilderActionButton(

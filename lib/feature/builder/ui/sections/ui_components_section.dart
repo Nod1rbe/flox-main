@@ -1,4 +1,3 @@
-import 'package:flox/core/constants/app_colors.dart';
 import 'package:flox/feature/builder/blocs/builder_bloc/builder_cubit.dart';
 import 'package:flox/feature/builder/configs/base_config.dart';
 import 'package:flox/ui_components/elements/base_element_component.dart';
@@ -12,50 +11,50 @@ class UIComponentsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.count(
       crossAxisCount: 2,
-      crossAxisSpacing: 10,
-      mainAxisSpacing: 10,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
         BaseElementButton(
-          name: 'Text',
-          icon: Icon(Icons.text_fields, color: AppColors.white),
+          name: 'Matn',
+          icon: const Icon(Icons.text_fields_rounded),
           onTap: () {
             context.read<BuilderCubit>().addComponent(ViewType.text);
           },
         ),
         BaseElementButton(
-          name: 'Image',
-          icon: Icon(Icons.image, color: AppColors.white),
+          name: 'Rasm',
+          icon: const Icon(Icons.image_outlined),
           onTap: () {
             context.read<BuilderCubit>().addComponent(ViewType.image);
           },
         ),
         BaseElementButton(
-          name: 'Multiple Choice',
-          icon: Icon(Icons.check_box, color: AppColors.white),
+          name: 'Tanlov',
+          icon: const Icon(Icons.checklist_rounded),
           onTap: () {
             context.read<BuilderCubit>().addComponent(ViewType.multipleChoice);
           },
         ),
         BaseElementButton(
-          name: 'Text Field',
-          icon: Icon(Icons.font_download, color: AppColors.white),
+          name: 'Maydon',
+          icon: const Icon(Icons.text_fields_outlined),
           onTap: () {
             context.read<BuilderCubit>().addComponent(ViewType.textField);
           },
         ),
         BaseElementButton(
-          name: 'Progress Bar',
-          icon: Icon(Icons.linear_scale, color: AppColors.white),
+          name: 'Progress',
+          icon: const Icon(Icons.linear_scale_rounded),
           onTap: () {
             context.read<BuilderCubit>().addComponent(ViewType.progress);
           },
         ),
         BaseElementButton(
-          name: 'Subscription\nOptions',
-          icon: Icon(Icons.attach_money, color: AppColors.white),
+          name: "To'lov",
+          icon: const Icon(Icons.payments_outlined),
           onTap: () {
             context.read<BuilderCubit>().addComponent(ViewType.payment);
           },

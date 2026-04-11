@@ -58,7 +58,22 @@ class BuilderRepository {
       for (int i = 0; i < AppConfigs.launcherSources.length; i++) {
         launcherLinks.add('${AppConfigs.launcherHostUrl}?source=${AppConfigs.launcherSources[i]}&fid=$funnelId');
       }
-      await _funnels.update({'links': launcherLinks}).eq('id', funnelId);
+      final idRows = await _pages.select('id').eq('funnel_id', funnelId).order('page_order', ascending: true);
+      final pageIds = <int>[];
+      for (final raw in idRows as List) {
+        if (raw is! Map) continue;
+        final m = Map<String, dynamic>.from(raw);
+        final v = m['id'];
+        if (v is int) {
+          pageIds.add(v);
+        } else if (v is num) {
+          pageIds.add(v.toInt());
+        }
+      }
+      await _funnels.update({
+        'links': launcherLinks,
+        if (pageIds.isNotEmpty) 'page_ids': pageIds,
+      }).eq('id', funnelId);
       return right(launcherLinks);
     } catch (e) {
       return left(e.toString());

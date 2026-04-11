@@ -12,6 +12,9 @@ class AnalyticsModel {
   final String? fieldName;
   final String? value;
 
+  /// Kirish manbai (`flox-app` query `source`); eski qatorlarda bo‘lmasligi mumkin.
+  final String? trafficSource;
+
   const AnalyticsModel({
     required this.id,
     required this.sessionId,
@@ -20,6 +23,7 @@ class AnalyticsModel {
     required this.createdAt,
     this.fieldName,
     this.value,
+    this.trafficSource,
   });
 
   factory AnalyticsModel.fromJson(Map<String, dynamic> json) => _$AnalyticsModelFromJson(json);
@@ -28,6 +32,6 @@ class AnalyticsModel {
 
   @override
   String toString() {
-    return 'AnalyticsModel(id: $id, sessionId: $sessionId, funnelId: $funnelId, pageId: $pageId, createdAt: $createdAt, fieldName: $fieldName, value: $value)';
+    return 'AnalyticsModel(id: $id, sessionId: $sessionId, funnelId: $funnelId, pageId: $pageId, createdAt: $createdAt, fieldName: $fieldName, value: $value, trafficSource: $trafficSource)';
   }
 }

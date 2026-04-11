@@ -1,15 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flox/core/constants/app_colors.dart';
 import 'package:flox/core/di/injection.dart';
-import 'package:flox/core/enums/ui_enums/flushbar_type.dart';
 import 'package:flox/core/extensions/build_context_extensions.dart';
 import 'package:flox/core/gen/assets.gen.dart';
 import 'package:flox/core/routes/app_router.gr.dart';
 import 'package:flox/feature/main_dashboard/my_funnels/bloc/funnel_projects_bloc.dart';
 import 'package:flox/feature/main_dashboard/my_funnels/data/models/funnel_projects_model.dart';
+import 'package:flox/feature/hackathon_ai/ui/hackathon_ai_chat_dialog.dart';
 import 'package:flox/feature/main_dashboard/my_funnels/ui/widgets/add_funnel_button.dart';
 import 'package:flox/feature/main_dashboard/my_funnels/ui/widgets/my_funnel_item.dart';
-import 'package:flox/ui_components/components/tappable_component.dart';
 import 'package:flox/ui_components/elements/shimmer_element.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,44 +37,83 @@ class _MyFunnelsPageState extends State<MyFunnelsPage> {
       child: Scaffold(
         backgroundColor: AppColors.pageBackground,
         body: Padding(
-          padding: const EdgeInsets.only(left: 40, right: 40, top: 20),
+          padding: const EdgeInsets.fromLTRB(28, 18, 28, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                    onTap: () => context.showFlushbar(
-                      message: 'This message is being showed for testing purposes',
-                      type: FlushbarType.success,
-                    ),
-                    child: Text(
-                      'Funnels',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: AppColors.white),
-                    ),
-                  ),
-                  TappableComponent(
-                    onTap: () => _funnelProjectsBloc.add(GetFunnelsEvent()),
-                    borderRadius: 6,
-                    child: SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Assets.icons.refresh.svg(
-                          colorFilter: ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Funnel\'lar',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.white,
+                          letterSpacing: -0.4,
                         ),
                       ),
-                    ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Tahrirlash, havolalar va chop etish',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.subtitle,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.primary,
+                          side: BorderSide(color: AppColors.primary.withValues(alpha: 0.55)),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        onPressed: () => HackathonAiChatDialog.show(context),
+                        icon: Icon(Icons.auto_awesome_rounded, size: 18, color: AppColors.primary),
+                        label: Text(
+                          'AI (local)',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Material(
+                        color: AppColors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(10),
+                          onTap: () => _funnelProjectsBloc.add(GetFunnelsEvent()),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Assets.icons.refresh.svg(
+                              width: 20,
+                              height: 20,
+                              colorFilter: ColorFilter.mode(AppColors.white.withValues(alpha: 0.9), BlendMode.srcIn),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 26),
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: 950, minWidth: 800),
+                    constraints: const BoxConstraints(maxWidth: 1040),
                     child: BlocConsumer<FunnelProjectsBloc, FunnelProjectsState>(
                       listenWhen: (o, n) => o.getStatus != n.getStatus,
                       listener: (context, state) {
@@ -91,12 +129,12 @@ class _MyFunnelsPageState extends State<MyFunnelsPage> {
                           child: GridView.builder(
                             clipBehavior: Clip.none,
                             physics: const ClampingScrollPhysics(),
-                            padding: const EdgeInsets.only(bottom: 24),
+                            padding: const EdgeInsets.only(bottom: 28),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: _crossAxisCount,
-                              mainAxisSpacing: 16,
-                              crossAxisSpacing: 16,
-                              mainAxisExtent: 160,
+                              mainAxisSpacing: 18,
+                              crossAxisSpacing: 18,
+                              mainAxisExtent: 168,
                             ),
                             itemCount: state.getStatus.isLoading ? 4 : state.funnels.length + 1,
                             itemBuilder: (context, index) {
@@ -108,8 +146,8 @@ class _MyFunnelsPageState extends State<MyFunnelsPage> {
                               return ShimmerElement(
                                 isLoading: isLoading,
                                 width: double.infinity,
-                                height: 150,
-                                radius: 10,
+                                height: 156,
+                                radius: 14,
                                 child: MyFunnelItem(
                                   funnel: funnel,
                                   onTap: () async {

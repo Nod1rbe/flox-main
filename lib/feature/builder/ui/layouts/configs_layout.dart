@@ -40,13 +40,50 @@ class _ConfigsLayoutState extends State<ConfigsLayout> {
       // buildWhen: (p, c) => p.selectedWidgetConfigIndex != c.selectedWidgetConfigIndex || p.navButtonCubit != c.navButtonCubit,
       builder: (context, state) {
         return Container(
-          width: 370,
+          width: 378,
           height: double.infinity,
-          color: AppColors.layoutBackground,
+          decoration: BoxDecoration(
+            color: AppColors.layoutBackground,
+            border: Border(
+              left: BorderSide(color: AppColors.dividerColor.withValues(alpha: 0.65)),
+            ),
+          ),
           child: state.selectedWidgetConfig == null || state.selectedWidgetConfigIndex == -1
-              ? const SizedBox()
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 48),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(Icons.tune_rounded, size: 44, color: AppColors.subtitle.withValues(alpha: 0.85)),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Sozlamalar',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'O‘rtadagi sahifadan blokni tanlang yoki chapdan yangi element qo‘shing — tanlangan komponentning xususiyatlari shu yerda chiqadi.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.subtitle,
+                          fontSize: 12,
+                          height: 1.45,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               : SingleChildScrollView(
-                  child: Column(children: getConfigWidgets(state.selectedWidgetConfig, state, context)),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 20, 28),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: getConfigWidgets(state.selectedWidgetConfig, state, context),
+                  ),
                 ),
         );
       },

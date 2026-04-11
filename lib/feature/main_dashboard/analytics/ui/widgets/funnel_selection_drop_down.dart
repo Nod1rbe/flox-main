@@ -38,11 +38,11 @@ class _FunnelSelectionDropDownState extends State<FunnelSelectionDropDown> {
                   (funnel) => funnel.id == funnelId,
                   orElse: () => state.funnels.first,
                 );
-                context.read<PageViewsCubit>().updateSelectedFunnel(selected);
+                context.read<PageViewsCubit>().selectFunnel(selected);
               },
-              itemBuilder: (context) => state.funnels.map((funnel) {
+              itemBuilder: (context) => state.funnels.where((f) => f.id != null && f.id!.isNotEmpty).map((funnel) {
                 return PopupMenuItem<String>(
-                  value: funnel.id,
+                  value: funnel.id!,
                   child: Text(
                     funnel.name ?? '',
                     style: TextStyle(

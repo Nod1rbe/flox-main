@@ -32,43 +32,57 @@ class _AddFunnelButtonState extends State<AddFunnelButton> {
             },
           );
         },
-        child: AnimatedContainer(
+        child: AnimatedScale(
           duration: const Duration(milliseconds: 150),
-          transform: _isHovering
-              ? (Matrix4.identity()
-                ..translate(0.0, -4.0, 0.0)
-                ..scale(1.02))
-              : Matrix4.identity(),
-          transformAlignment: Alignment.center,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(10.0),
-            border: Border.all(
-              color: AppColors.textSecondary.withValues(alpha: 0.5),
-              width: 1.5,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.add_rounded,
-                size: 34,
-                color: AppColors.textSecondary,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Add New Funnel',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
+          scale: _isHovering ? 1.02 : 1.0,
+          child: AnimatedSlide(
+            duration: const Duration(milliseconds: 150),
+            offset: _isHovering ? const Offset(0, -0.015) : Offset.zero,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: _isHovering
+                      ? AppColors.primary.withValues(alpha: 0.55)
+                      : AppColors.primary.withValues(alpha: 0.32),
+                  width: 1.5,
                 ),
               ),
-            ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add_rounded,
+                    size: 36,
+                    color: AppColors.primary.withValues(alpha: 0.9),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Yangi funnel',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.white.withValues(alpha: 0.92),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Bosib qo‘shing',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.subtitle,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

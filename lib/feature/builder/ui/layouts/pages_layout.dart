@@ -24,22 +24,38 @@ class PagesLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      width: 112,
+      padding: const EdgeInsets.fromLTRB(14, 20, 14, 20),
       decoration: BoxDecoration(
         color: AppColors.layoutBackground,
-        border: Border(right: BorderSide(color: AppColors.white, width: 0.2)),
+        border: Border(
+          right: BorderSide(color: AppColors.dividerColor.withValues(alpha: 0.9)),
+        ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Pages',
+            'Sahifalar',
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.white,
               fontWeight: FontWeight.w600,
-              fontSize: 16,
+              fontSize: 13,
+              letterSpacing: 0.2,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 2),
+          Text(
+            'Tartib',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColors.subtitle,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 14),
           BlocBuilder<BuilderManagerCubit, BuilderManagerState>(
             builder: (context, state) {
               final bool loading = state.getProjectStatus.isLoading;
@@ -50,7 +66,7 @@ class PagesLayout extends StatelessWidget {
                     children: [
                       const SizedBox(height: 8),
                       Column(
-                        spacing: 16,
+                        spacing: 12,
                         children: List.generate(loading ? 3 : pageCount, (index) {
                           final isSelected = index == selectedPage;
                           return ShimmerElement(

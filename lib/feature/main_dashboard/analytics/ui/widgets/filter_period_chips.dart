@@ -29,6 +29,9 @@ class FilterPeriodChips extends StatelessWidget {
             decoration: BoxDecoration(
               color: isSelected ? AppColors.primary : AppColors.cardColor,
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isSelected ? AppColors.primary : AppColors.dividerColor.withValues(alpha: 0.65),
+              ),
             ),
             child: Center(
               child: Text(

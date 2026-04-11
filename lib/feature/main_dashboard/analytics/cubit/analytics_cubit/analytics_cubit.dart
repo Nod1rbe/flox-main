@@ -23,7 +23,7 @@ class AnalyticsCubit extends Cubit<AnalyticsState> {
     required List<int> selectedPageIds,
     required List<PageViewsModel> pageViews,
   }) async {
-    _selectedPageIds = selectedPageIds;
+    _selectedPageIds = _dedupeIdsInOrder(selectedPageIds);
     _currentPageViews = pageViews;
     emit(state.copyWith(getStatus: SubmissionStatus.loading));
     final result = await _analyticsRepository.getAnalytics(funnelId: funnelId);
@@ -55,13 +55,11 @@ class AnalyticsCubit extends Cubit<AnalyticsState> {
     final grouped = _groupAnalyticsByFieldName(filtered);
     final sourceByPage = _topSourceByPage(filteredViews);
     final leads = _buildLeadRows(filtered, sourceByPage);
-    final performance = _buildPagePerformanceRows(filtered, sourceByPage);
 
     emit(
       state.copyWith(
         groupedAnalytics: grouped,
         leadRows: leads,
-        pagePerformanceRows: performance,
       ),
     );
   }
@@ -111,6 +109,39 @@ class AnalyticsCubit extends Cubit<AnalyticsState> {
     return result;
   }
 
+  /// Sessiya uchun saqlangan `traffic_source` (flox-app); yo‘q bo‘lsa — sahifa bo‘yicha fallback.
+  String _leadTrafficSource(List<AnalyticsModel> sessionEvents, Map<int, String> sourceByPageFallback) {
+    for (final e in sessionEvents) {
+      final raw = e.trafficSource?.trim();
+      if (raw != null && raw.isNotEmpty) {
+        return _sourceLabel(raw);
+      }
+    }
+    final reachedPage = sessionEvents.map((e) => e.pageId).fold<int>(0, (a, b) => a > b ? a : b);
+    return sourceByPageFallback[reachedPage] ?? '-';
+  }
+
+  String _sourceLabel(String raw) {
+    switch (raw.toLowerCase()) {
+      case 'telegram':
+        return 'Telegram';
+      case 'instagram':
+        return 'Instagram';
+      case 'x':
+        return 'X';
+      case 'facebook':
+        return 'Facebook';
+      default:
+        if (raw.isEmpty) return '-';
+        return raw[0].toUpperCase() + raw.substring(1).toLowerCase();
+    }
+  }
+
+  List<int> _dedupeIdsInOrder(List<int> ids) {
+    final seen = <int>{};
+    return [for (final id in ids) if (seen.add(id)) id];
+  }
+
   List<AnalyticsLeadRow> _buildLeadRows(List<AnalyticsModel> analytics, Map<int, String> sourceByPage) {
     final Map<String, List<AnalyticsModel>> bySession = {};
     for (final item in analytics) {
@@ -134,33 +165,12 @@ class AnalyticsCubit extends Cubit<AnalyticsState> {
         sessionId: entry.key,
         createdAt: createdAt,
         reachedPageId: reachedPage,
-        source: sourceByPage[reachedPage] ?? '-',
+        source: _leadTrafficSource(sessionEvents, sourceByPage),
         fields: fields,
       );
     }).toList();
 
     rows.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return rows;
-  }
-
-  List<PagePerformanceRow> _buildPagePerformanceRows(List<AnalyticsModel> analytics, Map<int, String> sourceByPage) {
-    final Map<int, List<AnalyticsModel>> byPage = {};
-    for (final event in analytics) {
-      if (_selectedPageIds.isNotEmpty && !_selectedPageIds.contains(event.pageId)) continue;
-      byPage.putIfAbsent(event.pageId, () => []).add(event);
-    }
-
-    final List<PagePerformanceRow> rows = byPage.entries.map((entry) {
-      final sessionIds = entry.value.map((e) => e.sessionId).toSet();
-      return PagePerformanceRow(
-        pageId: entry.key,
-        usersReached: sessionIds.length,
-        events: entry.value.length,
-        topSource: sourceByPage[entry.key] ?? '-',
-      );
-    }).toList();
-
-    rows.sort((a, b) => a.pageId.compareTo(b.pageId));
     return rows;
   }
 

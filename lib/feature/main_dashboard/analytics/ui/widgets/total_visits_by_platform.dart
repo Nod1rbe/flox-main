@@ -15,7 +15,16 @@ class TotalVisitsByPlatform extends StatefulWidget {
   final bool isLoading;
   final PageViewsFilterType selectedRange;
 
-  const TotalVisitsByPlatform({super.key, required this.views, this.isLoading = false, required this.selectedRange});
+  /// `false` bo‘lsa, tashqi davr filtri ishlatiladi.
+  final bool showPeriodChips;
+
+  const TotalVisitsByPlatform({
+    super.key,
+    required this.views,
+    this.isLoading = false,
+    required this.selectedRange,
+    this.showPeriodChips = true,
+  });
 
   @override
   State<TotalVisitsByPlatform> createState() => _TotalVisitsByPlatformState();
@@ -42,18 +51,33 @@ class _TotalVisitsByPlatformState extends State<TotalVisitsByPlatform> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Social Media',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.white,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Manba bo‘yicha',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Ijtimoiy tarmoqlar',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.subtitle,
+                      ),
+                    ),
+                  ],
+                ),
+                if (widget.showPeriodChips)
+                  FilterPeriodChips(
+                    selectedRange: widget.selectedRange,
+                    onSelected: context.read<PageViewsCubit>().updatePieFilterPeriod,
                   ),
-                ),
-                FilterPeriodChips(
-                  selectedRange: widget.selectedRange,
-                  onSelected: context.read<PageViewsCubit>().updatePieFilterPeriod,
-                ),
               ],
             ),
             Expanded(

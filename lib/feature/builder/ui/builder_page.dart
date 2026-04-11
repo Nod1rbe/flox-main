@@ -60,7 +60,58 @@ class _BuilderPageState extends State<BuilderPage> {
   @override
   Widget build(BuildContext context) {
     if (widget.funnelId == null || widget.isEditing == null || widget.funnelName == null) {
-      return const Center(child: Text('Missing required parameters'));
+      return Scaffold(
+        backgroundColor: AppColors.pageBackground,
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.layoutBackground,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.dividerColor),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.35),
+                    blurRadius: 28,
+                    offset: const Offset(0, 14),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.link_off_rounded, size: 44, color: AppColors.primary.withValues(alpha: 0.9)),
+                    const SizedBox(height: 18),
+                    Text(
+                      'Havola to‘liq emas',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Builder ochish uchun URLda fid, editing va name parametrlari bo‘lishi kerak.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.subtitle,
+                        fontSize: 13,
+                        height: 1.45,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
     }
     return MultiBlocProvider(
       providers: [

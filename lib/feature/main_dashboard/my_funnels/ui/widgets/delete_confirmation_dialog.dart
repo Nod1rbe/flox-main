@@ -77,10 +77,11 @@ class DeleteConfirmationDialog extends StatelessWidget {
                         context.router.maybePop(true);
                       }
                       if (state.deleteStatus.isFailure) {
+                        final msg = state.deleteErrorMessage.trim().isEmpty
+                            ? 'Failed to delete funnel'
+                            : state.deleteErrorMessage;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Failed to delete funnel'),
-                          ),
+                          SnackBar(content: Text(msg)),
                         );
                       }
                     },

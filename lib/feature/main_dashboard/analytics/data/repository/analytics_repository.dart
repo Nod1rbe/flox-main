@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flox/core/extensions/logger.dart';
 import 'package:flox/feature/main_dashboard/analytics/data/models/analytics_model/analytics_model.dart';
 import 'package:flox/feature/main_dashboard/analytics/data/models/page_views_model/page_views_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,7 +14,10 @@ class AnalyticsRepository {
   Future<Either<String, List<AnalyticsModel>>> getAnalytics({required String funnelId}) async {
     try {
       final response = await _analyticsTable.select().eq('funnel_id', funnelId);
-      final List<AnalyticsModel> analytics = response.map((e) => AnalyticsModel.fromJson(e)).toList();
+      final analytics = <AnalyticsModel>[];
+      for (final raw in response) {
+        analytics.add(AnalyticsModel.fromJson(Map<String, dynamic>.from(raw as Map)));
+      }
       return right(analytics);
     } catch (e) {
       debugPrint(e.toString());
@@ -25,15 +27,19 @@ class AnalyticsRepository {
 
   Future<Either<String, List<PageViewsModel>>> getPageViews({required List<int> pageIds}) async {
     try {
-      final List<PageViewsModel> pageViews = [];
-      for (int pageId in pageIds) {
+      if (pageIds.isEmpty) return right(const []);
+      final seenIds = <int>{};
+      final uniquePageIds = <int>[];
+      for (final id in pageIds) {
+        if (seenIds.add(id)) uniquePageIds.add(id);
+      }
+      final pageViews = <PageViewsModel>[];
+      for (final pageId in uniquePageIds) {
         final response = await _pageViewsTable.select().eq('page_id', pageId);
-        for (final item in response as List) {
-          pageViews.add(PageViewsModel.fromJson(item));
+        for (final raw in response) {
+          pageViews.add(PageViewsModel.fromJson(Map<String, dynamic>.from(raw as Map)));
         }
       }
-      appLog(pageViews.length);
-      appLog(pageViews);
       return right(pageViews);
     } catch (e) {
       debugPrint(e.toString());

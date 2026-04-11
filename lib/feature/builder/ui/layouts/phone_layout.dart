@@ -40,26 +40,42 @@ class PhoneScreenLayout extends StatelessWidget {
         }
 
         return Center(
-          child: Container(
-            height: 600,
-            width: 285,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(48)),
-            foregroundDecoration: BoxDecoration(
-              border: Border.all(color: AppColors.black, width: 4, strokeAlign: BorderSide.strokeAlignOutside),
-              borderRadius: BorderRadius.circular(48),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(48),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            child: Container(
+              height: 600,
+              width: 285,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(48),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.55),
+                    blurRadius: 44,
+                    spreadRadius: -6,
+                    offset: const Offset(0, 22),
+                  ),
+                ],
+              ),
+              foregroundDecoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color(0xFF2C2C30),
+                  width: 3,
+                  strokeAlign: BorderSide.strokeAlignOutside,
                 ),
-                child: ShimmerElement(
-                  isLoading: loading,
-                  height: 600,
-                  width: 285,
-                  radius: 48,
-                  child: Stack(
+                borderRadius: BorderRadius.circular(48),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(48),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(48),
+                  ),
+                  child: ShimmerElement(
+                    isLoading: loading,
+                    height: 600,
+                    width: 285,
+                    radius: 48,
+                    child: Stack(
                     children: [
                       if (imageProvider != null)
                         Positioned.fill(
@@ -165,6 +181,7 @@ class PhoneScreenLayout extends StatelessWidget {
               ),
             ),
           ),
+        ),
         );
       },
     );

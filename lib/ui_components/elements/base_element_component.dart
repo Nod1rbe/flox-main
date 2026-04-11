@@ -22,25 +22,41 @@ class BaseElementButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(color: AppColors.white),
-        ),
-        child: SizedBox(
-          height: 80,
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              icon,
-              SizedBox(height: 8),
-              TextAtom(text: name),
-            ],
+    final fill = color == Colors.transparent ? AppColors.cardColor.withValues(alpha: 0.45) : color;
+    return Material(
+      color: AppColors.transparent,
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(borderRadius),
+        onTap: onTap,
+        splashColor: AppColors.primary.withValues(alpha: 0.12),
+        highlightColor: AppColors.white.withValues(alpha: 0.04),
+        child: Container(
+          padding: padding,
+          decoration: BoxDecoration(
+            color: fill,
+            borderRadius: BorderRadius.circular(borderRadius),
+            border: Border.all(color: AppColors.dividerColor.withValues(alpha: 0.95)),
+          ),
+          child: SizedBox(
+            height: 82,
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconTheme(
+                  data: IconThemeData(color: AppColors.primary.withValues(alpha: 0.95), size: 26),
+                  child: icon,
+                ),
+                const SizedBox(height: 8),
+                TextAtom(
+                  text: name,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.white.withValues(alpha: 0.92),
+                ),
+              ],
+            ),
           ),
         ),
       ),

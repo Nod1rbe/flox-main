@@ -28,12 +28,14 @@ class BuilderActionButton extends StatelessWidget {
 
     return Material(
       color: backgroundColor,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(10),
+      elevation: isPrimary ? 2 : 0,
+      shadowColor: isPrimary ? AppColors.primary.withValues(alpha: 0.45) : Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        splashColor: Colors.white.withValues(alpha: 0.1),
-        highlightColor: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(10),
+        splashColor: Colors.white.withValues(alpha: 0.12),
+        highlightColor: Colors.white.withValues(alpha: 0.06),
         child: Container(
           height: height,
           width: width,
@@ -49,14 +51,15 @@ class BuilderActionButton extends StatelessWidget {
                   children: [
                     if (icon != null) ...[
                       icon!,
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 5),
                     ],
                     Text(
                       label,
                       style: TextStyle(
                         color: AppColors.white,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         fontSize: 12,
+                        letterSpacing: 0.15,
                       ),
                     ),
                   ],

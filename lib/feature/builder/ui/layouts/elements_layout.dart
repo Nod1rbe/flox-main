@@ -29,44 +29,57 @@ class _ElementsLayoutState extends State<ElementsLayout> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Container(
       height: double.infinity,
-      width: 270,
-      color: AppColors.layoutBackground,
+      width: 278,
+      decoration: BoxDecoration(
+        color: AppColors.layoutBackground,
+        border: Border(
+          right: BorderSide(color: AppColors.dividerColor.withValues(alpha: 0.65)),
+        ),
+      ),
       child: Column(
         children: [
-          Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 32,
-              horizontal: 20,
-            ),
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.defaultButtonBackground,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.primary,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+            child: Container(
+              height: 40,
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: AppColors.pageBackground,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.dividerColor.withValues(alpha: 0.6)),
               ),
-              dividerColor: AppColors.transparent,
-              labelColor: AppColors.white,
-              unselectedLabelColor: AppColors.white,
-              labelStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(9),
+                  color: AppColors.primary,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                dividerColor: AppColors.transparent,
+                labelColor: AppColors.white,
+                unselectedLabelColor: AppColors.subtitle,
+                labelStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorPadding: EdgeInsets.zero,
+                labelPadding: EdgeInsets.zero,
+                tabs: const [
+                  Tab(text: 'Elementlar'),
+                  Tab(text: 'Sahifa'),
+                ],
               ),
-              unselectedLabelStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorPadding: EdgeInsets.zero,
-              labelPadding: EdgeInsets.zero,
-              tabs: const [
-                Tab(text: "Elements"),
-                Tab(text: "Page Settings"),
-              ],
             ),
           ),
           Expanded(

@@ -15,6 +15,7 @@ AnalyticsModel _$AnalyticsModelFromJson(Map<String, dynamic> json) =>
       createdAt: DateTime.parse(json['created_at'] as String),
       fieldName: json['field_name'] as String?,
       value: json['value'] as String?,
+      trafficSource: json['traffic_source'] as String?,
     );
 
 Map<String, dynamic> _$AnalyticsModelToJson(AnalyticsModel instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$AnalyticsModelToJson(AnalyticsModel instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'field_name': instance.fieldName,
       'value': instance.value,
+      'traffic_source': instance.trafficSource,
     };

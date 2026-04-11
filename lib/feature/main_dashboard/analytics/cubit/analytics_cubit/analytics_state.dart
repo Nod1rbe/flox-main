@@ -28,29 +28,11 @@ class AnalyticsLeadRow extends Equatable {
   List<Object?> get props => [sessionId, createdAt, reachedPageId, source, fields];
 }
 
-class PagePerformanceRow extends Equatable {
-  final int pageId;
-  final int usersReached;
-  final int events;
-  final String topSource;
-
-  const PagePerformanceRow({
-    required this.pageId,
-    required this.usersReached,
-    required this.events,
-    required this.topSource,
-  });
-
-  @override
-  List<Object?> get props => [pageId, usersReached, events, topSource];
-}
-
 final class AnalyticsState extends Equatable {
   final SubmissionStatus getStatus;
   final String errorMessage;
   final List<AnalyticsModel> analytics;
   final List<AnalyticsLeadRow> leadRows;
-  final List<PagePerformanceRow> pagePerformanceRows;
   final AnalyticsPeriodType periodFilter;
   final Map<String, List<String>> groupedAnalytics;
 
@@ -59,7 +41,6 @@ final class AnalyticsState extends Equatable {
     this.errorMessage = '',
     this.analytics = const [],
     this.leadRows = const [],
-    this.pagePerformanceRows = const [],
     this.periodFilter = AnalyticsPeriodType.week,
     this.groupedAnalytics = const {},
   });
@@ -69,7 +50,6 @@ final class AnalyticsState extends Equatable {
     String? errorMessage,
     List<AnalyticsModel>? analytics,
     List<AnalyticsLeadRow>? leadRows,
-    List<PagePerformanceRow>? pagePerformanceRows,
     AnalyticsPeriodType? periodFilter,
     Map<String, List<String>>? groupedAnalytics,
   }) {
@@ -78,7 +58,6 @@ final class AnalyticsState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       analytics: analytics ?? this.analytics,
       leadRows: leadRows ?? this.leadRows,
-      pagePerformanceRows: pagePerformanceRows ?? this.pagePerformanceRows,
       periodFilter: periodFilter ?? this.periodFilter,
       groupedAnalytics: groupedAnalytics ?? this.groupedAnalytics,
     );
@@ -90,7 +69,6 @@ final class AnalyticsState extends Equatable {
         errorMessage,
         analytics,
         leadRows,
-        pagePerformanceRows,
         periodFilter,
         groupedAnalytics,
       ];

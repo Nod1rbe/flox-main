@@ -32,6 +32,34 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   late final PageViewsCubit _pageViewsCubit;
   late final AnalyticsCubit _analyticsCubit;
 
+  PageViewsFilterType _pageFilterFrom(AnalyticsPeriodType p) {
+    switch (p) {
+      case AnalyticsPeriodType.day:
+        return PageViewsFilterType.day;
+      case AnalyticsPeriodType.week:
+        return PageViewsFilterType.week;
+      case AnalyticsPeriodType.month:
+        return PageViewsFilterType.month;
+    }
+  }
+
+  AnalyticsPeriodType _analyticsPeriodFrom(PageViewsFilterType r) {
+    switch (r) {
+      case PageViewsFilterType.day:
+        return AnalyticsPeriodType.day;
+      case PageViewsFilterType.week:
+        return AnalyticsPeriodType.week;
+      case PageViewsFilterType.month:
+        return AnalyticsPeriodType.month;
+    }
+  }
+
+  void _onGlobalPeriodChanged(PageViewsFilterType range) {
+    _analyticsCubit.updatePeriod(_analyticsPeriodFrom(range));
+    _pageViewsCubit.updateBarFilterPeriod(range);
+    _pageViewsCubit.updatePieFilterPeriod(range);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -49,13 +77,14 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         listener: (context, state) {
           final funnel = state.selectedFunnel;
           if (funnel != null && funnel.id != null) {
-            _pageViewsCubit.getViews(funnel.pageIds).then((_) {
-              _analyticsCubit.getAnalytics(
-                funnelId: funnel.id ?? '',
-                selectedPageIds: funnel.pageIds,
-                pageViews: _pageViewsCubit.state.pageViews,
-              );
-            });
+            final r = _pageFilterFrom(_analyticsCubit.state.periodFilter);
+            _pageViewsCubit.updateBarFilterPeriod(r);
+            _pageViewsCubit.updatePieFilterPeriod(r);
+            _analyticsCubit.getAnalytics(
+              funnelId: funnel.id!,
+              selectedPageIds: funnel.pageIds,
+              pageViews: state.pageViews,
+            );
           }
         },
         child: Scaffold(
@@ -69,19 +98,35 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Analytics',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.white,
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Analytics',
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.white,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Funnel bo‘yicha tashriflar, sahifalar va leadlar',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.subtitle,
+                              ),
+                            ),
+                          ],
                         ),
                         FunnelSelectionDropDown().centerRight,
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 20),
                     Expanded(
                       child: SingleChildScrollView(
                         physics: const ClampingScrollPhysics(),
@@ -107,6 +152,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                   child: BaseContainerComponent(
                                     height: 100,
                                     padding: EdgeInsets.zero,
+                                    border: Border.all(color: AppColors.dividerColor.withValues(alpha: 0.45)),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,7 +183,44 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                 );
                               },
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 20),
+                            BlocBuilder<AnalyticsCubit, AnalyticsState>(
+                              builder: (context, aState) {
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Tashriflar va davr',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.white,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            'Grafiklar, sahifa statistikasi va jadval bir xil davr bo‘yicha',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: AppColors.subtitle,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    FilterPeriodChips(
+                                      selectedRange: _pageFilterFrom(aState.periodFilter),
+                                      onSelected: _onGlobalPeriodChanged,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 14),
                             BlocBuilder<PageViewsCubit, PageViewsState>(
                               builder: (context, state) {
                                 final filteredPie = _pageViewsCubit.getFilteredViewsForPie();
@@ -153,6 +236,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                         barData: barData,
                                         selectedRange: state.barFilter,
                                         isLoading: state.getStatus.isLoading,
+                                        showPeriodChips: false,
                                       ),
                                     ),
                                     Flexible(
@@ -161,25 +245,38 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                         views: filteredPie,
                                         selectedRange: state.pieFilter,
                                         isLoading: state.getStatus.isLoading,
+                                        showPeriodChips: false,
                                       ),
                                     ),
                                   ],
                                 );
                               },
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 28),
                             BlocBuilder<PageViewsCubit, PageViewsState>(
                               builder: (context, state) {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      'Leads data',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w500,
-                                        color: AppColors.white,
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Leadlar',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Sessiya va forma maydonlari',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.subtitle,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     TappableComponent(
                                       onTap: () => _analyticsCubit.getAnalytics(
@@ -206,95 +303,20 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                                 );
                               },
                             ),
-                            const SizedBox(height: 16),
-                            BlocBuilder<AnalyticsCubit, AnalyticsState>(
-                              builder: (context, analyticsState) {
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    FilterPeriodChips(
-                                      selectedRange: switch (analyticsState.periodFilter) {
-                                        AnalyticsPeriodType.day => PageViewsFilterType.day,
-                                        AnalyticsPeriodType.week => PageViewsFilterType.week,
-                                        AnalyticsPeriodType.month => PageViewsFilterType.month,
-                                      },
-                                      onSelected: (range) {
-                                        final period = switch (range) {
-                                          PageViewsFilterType.day => AnalyticsPeriodType.day,
-                                          PageViewsFilterType.week => AnalyticsPeriodType.week,
-                                          PageViewsFilterType.month => AnalyticsPeriodType.month,
-                                        };
-                                        _analyticsCubit.updatePeriod(period);
-                                      },
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: _analyticsCubit.exportLeadsToExcelCompatibleCsv,
-                                      child: const Text('Export Excel (.csv)'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            BlocBuilder<AnalyticsCubit, AnalyticsState>(
-                              builder: (context, state) {
-                                return BaseContainerComponent(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Page performance (selected funnel)',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      if (state.pagePerformanceRows.isEmpty)
-                                        const Text(
-                                          'No performance data for selected period',
-                                          style: TextStyle(color: AppColors.white),
-                                        )
-                                      else
-                                        ...state.pagePerformanceRows.map((row) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(bottom: 8),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    'Page ${row.pageId}',
-                                                    style: const TextStyle(color: AppColors.white),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Text(
-                                                    'Users: ${row.usersReached}',
-                                                    style: const TextStyle(color: AppColors.white),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Text(
-                                                    'Events: ${row.events}',
-                                                    style: const TextStyle(color: AppColors.white),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Text(
-                                                    'Source: ${row.topSource}',
-                                                    style: const TextStyle(color: AppColors.white),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }),
-                                    ],
-                                  ),
-                                );
-                              },
+                            const SizedBox(height: 12),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: FilledButton.icon(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: AppColors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                ),
+                                onPressed: _analyticsCubit.exportLeadsToExcelCompatibleCsv,
+                                icon: const Icon(Icons.download_rounded, size: 20),
+                                label: const Text('Excel (.csv)'),
+                              ),
                             ),
                             const SizedBox(height: 16),
                             BlocBuilder<AnalyticsCubit, AnalyticsState>(
